@@ -1,0 +1,8 @@
+
+{
+  "name": "MedLink RFID Doctor Dashboard",
+  "description": "A comprehensive healthcare management system for ESP32-based RFID medication dispensers, allowing doctors to manage patients, prescriptions, and monitor dispensing logs in real-time.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
