@@ -37,6 +37,36 @@ const getPrescriptionForHardware = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Update prescription status to 'Dispensed' by RFID
+// @route   PUT /api/hardware/dispensed/:rfidUid
+// @access  Public (Hardware access)
+const updateDispenseStatus = asyncHandler(async (req, res) => {
+    const { rfidUid } = req.params;
+
+    // Find the latest prescription with status 'Pending'
+    const prescription = await Prescription.findOne({
+        rfidUid,
+        status: 'Pending'
+    }).sort({ createdAt: -1 });
+
+    if (prescription) {
+        prescription.status = 'Dispensed';
+        prescription.lastDispensed = new Date();
+        await prescription.save();
+
+        res.json({
+            message: 'Prescription marked as dispensed',
+            rfidUid: prescription.rfidUid,
+            status: prescription.status,
+            lastDispensed: prescription.lastDispensed
+        });
+    } else {
+        res.status(404);
+        throw new Error('No pending prescription found for this RFID to update');
+    }
+});
+
 module.exports = {
     getPrescriptionForHardware,
+    updateDispenseStatus,
 };
